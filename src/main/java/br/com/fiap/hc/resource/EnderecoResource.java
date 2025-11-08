@@ -28,14 +28,14 @@ public class EnderecoResource {
     private ModelMapper modelMapper;
 
     @DELETE
-    @Path("/{id}")
+    @Path("/deletar/{id}")
     public Response deletar(@PathParam("id") int id) throws EntidadeNaoEncontradaException, SQLException {
         enderecoDao.deletar(id);
         return Response.noContent().build(); // 204 No Content
     }
 
     @PUT
-    @Path("/{id}")
+    @Path("/atualizar/{id}")
     public Response atualizar(@PathParam("id") int id, @Valid AtualizarEnderecoDto dto)
             throws EntidadeNaoEncontradaException, SQLException {
         Endereco endereco = modelMapper.map(dto, Endereco.class);
@@ -45,13 +45,14 @@ public class EnderecoResource {
     }
 
     @GET
-    @Path("/{id}")
+    @Path("/buscar/{id}")
     public Response buscar(@PathParam("id") int id) throws SQLException, EntidadeNaoEncontradaException {
         DetalhesEnderecoDto dto = modelMapper.map(enderecoDao.buscar(id), DetalhesEnderecoDto.class);
         return Response.ok(dto).build();
     }
 
     @GET
+    @Path("/listar")
     public List<DetalhesEnderecoDto> listar() throws SQLException {
         return enderecoDao.listar().stream()
                 .map(e -> modelMapper.map(e, DetalhesEnderecoDto.class))
@@ -59,19 +60,19 @@ public class EnderecoResource {
     }
 
     @POST
+    @Path("/criar")
     public Response create(@Valid CadastroEnderecoDto dto,
                            @Context UriInfo uriInfo) throws SQLException {
 
         Endereco endereco = modelMapper.map(dto, Endereco.class);
-        enderecoDao.cadastrar(endereco);
+        endereco = enderecoDao.cadastrar(endereco);
 
-        // Constrói a URL para o recurso criado
         URI uri = uriInfo.getAbsolutePathBuilder()
                 .path(String.valueOf(endereco.getIdEndereco()))
                 .build();
 
         return Response.created(uri)
-                .entity(modelMapper.map(endereco, DetalhesEnderecoDto.class))
+                .entity(endereco)
                 .build(); // 201 Created
     }
 }

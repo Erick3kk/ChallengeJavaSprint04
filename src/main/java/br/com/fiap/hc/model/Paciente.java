@@ -3,6 +3,8 @@ package br.com.fiap.hc.model;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Date;
+
 @Getter
 @Setter
 
@@ -11,7 +13,7 @@ public class Paciente {
     private int idPaciente;
     private String nome;
     private String cpf;
-    private String dataNascimeto;
+    private Date dataNascimento;
     private String telefone;
     private String email;
     private Endereco endereco;
@@ -19,11 +21,11 @@ public class Paciente {
     public Paciente() {
     }
 
-    public Paciente(int idPaciente, String nome, String cpf, String dataNascimeto, String telefone, String email, Endereco endereco) {
+    public Paciente(int idPaciente, String nome, String cpf, Date dataNascimeto, String telefone, String email, Endereco endereco) {
         this.idPaciente = idPaciente;
         this.nome = nome;
         this.cpf = cpf;
-        this.dataNascimeto = dataNascimeto;
+        this.dataNascimento = dataNascimeto;
         this.telefone = telefone;
         this.email = email;
         this.endereco = endereco;
@@ -35,6 +37,6 @@ public class Paciente {
     @Override
     public String toString() {
         return "idPaciente: " + idPaciente + ", Nome: " + nome + ", CPF: " +
-                cpf + " Data de Nascimento: " + dataNascimeto + ", Telefone: " + telefone + ", Email: " + email + "Endereco: " + endereco;
+                cpf + " Data de Nascimento: " + dataNascimento + ", Telefone: " + telefone + ", Email: " + email + "Endereco: " + endereco;
     }
 }

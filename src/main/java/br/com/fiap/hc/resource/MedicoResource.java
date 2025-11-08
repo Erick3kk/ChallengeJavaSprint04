@@ -28,14 +28,14 @@ public class MedicoResource {
     private ModelMapper modelMapper;
 
     @DELETE
-    @Path("/{id}")
+    @Path("/deletar/{id}")
     public Response deletar(@PathParam("id") int id) throws EntidadeNaoEncontradaException, SQLException {
         medicoDao.deleteMedico(id);
         return Response.noContent().build(); // 204 No Content
     }
 
     @PUT
-    @Path("/{id}")
+    @Path("/atualizar/{id}")
     public Response atualizar(@PathParam("id") int id, @Valid AtualizarMedicoDto dto)
             throws EntidadeNaoEncontradaException, SQLException {
         Medico medico = modelMapper.map(dto, Medico.class);
@@ -45,13 +45,14 @@ public class MedicoResource {
     }
 
     @GET
-    @Path("/{id}")
+    @Path("/buscar/{id}")
     public Response buscar(@PathParam("id") int id) throws SQLException, EntidadeNaoEncontradaException {
         DetalhesMedicoDto dto = modelMapper.map(medicoDao.buscar(id), DetalhesMedicoDto.class);
         return Response.ok(dto).build();
     }
 
     @GET
+    @Path("/listar")
     public List<DetalhesMedicoDto> listar() throws SQLException {
         return medicoDao.listarMedicos().stream()
                 .map(m -> modelMapper.map(m, DetalhesMedicoDto.class))
@@ -59,6 +60,7 @@ public class MedicoResource {
     }
 
     @POST
+    @Path("/criar")
     public Response create(@Valid CadastroMedicoDto dto,
                            @Context UriInfo uriInfo) throws SQLException {
 

@@ -4,6 +4,7 @@ import br.com.fiap.hc.exception.EntidadeNaoEncontradaException;
 import br.com.fiap.hc.model.Consulta;
 import br.com.fiap.hc.model.Medico;
 import br.com.fiap.hc.model.Paciente;
+import br.com.fiap.hc.model.request.ConsultaRequest;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -16,6 +17,8 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 
+import static br.com.fiap.hc.utils.Metodos.formatDataHora;
+
 @ApplicationScoped
 public class ConsultaDao {
 
@@ -26,21 +29,23 @@ public class ConsultaDao {
 
     public ConsultaDao(DataSource dataSource, EnderecoDao enderecoDao) throws SQLException, ClassNotFoundException {
         this.dataSource = dataSource;
-        this.pacienteDao = new PacienteDao(this.dataSource, enderecoDao);
         this.medicoDao = new MedicoDao(this.dataSource);
+        this.pacienteDao = new PacienteDao(this.dataSource, enderecoDao);
     }
 
-    public void cadastrar(Consulta consulta) throws SQLException {
+    public void cadastrar(ConsultaRequest consulta) throws SQLException {
         try (Connection conexao = dataSource.getConnection()) {
 
             PreparedStatement stmt = conexao.prepareStatement("INSERT INTO T_HC_CONSULTA (ID_CONSULTA, DT_HORA, ST_STATUS, DS_AREA_MEDICA, ID_PACIENTE, ID_MEDICO) " +
-                    "VALUES (SQ_HC_CONSULTA.nextval, ?, ?, ?, ?, ?)", new String[]{"ID_CONSULTA"});
+                    "VALUES (SQ_HC_CONSULTA.nextval, TO_DATE(?, 'YYYY-MM-DD HH24:MI:SS'), ?, ?, ?, ?)", new String[]{"ID_CONSULTA"});
 
-            stmt.setTimestamp(1, new Timestamp(consulta.getDataHora().getTime()));
+            String dataHoraStr = formatDataHora(consulta.getDataHora()); // agora é String
+
+            stmt.setString(1, dataHoraStr);
             stmt.setString(2, consulta.getStatus());
             stmt.setString(3, consulta.getAreaMedica());
-            stmt.setInt(4, consulta.getPaciente().getIdPaciente());
-            stmt.setInt(5, consulta.getMedico().getIdMedico());
+            stmt.setInt(4, consulta.getIdPaciente());
+            stmt.setInt(5, consulta.getIdMedico());
 
             stmt.executeUpdate();
 
@@ -51,6 +56,7 @@ public class ConsultaDao {
             throw e;
         }
     }
+
 
     public Consulta buscar(int id) throws SQLException, EntidadeNaoEncontradaException {
         try (Connection conexao = dataSource.getConnection()) {
@@ -78,16 +84,26 @@ public class ConsultaDao {
         }
     }
 
+    public List<Consulta> listarConsultaPaciente(int idPaciente) throws SQLException {
+        try (Connection conexao = dataSource.getConnection()) {
+            PreparedStatement stmt = conexao.prepareStatement("SELECT * FROM T_HC_CONSULTA WHERE ID_PACIENTE = ? ");
+            stmt.setInt(1, idPaciente);
+            ResultSet rs = stmt.executeQuery();
+            List<Consulta> consultas = new ArrayList<>();
+            while (rs.next()) {
+                Consulta consulta = parseConsulta(rs);
+                consultas.add(consulta);
+            }
+            return consultas;
+        }
+    }
+
     public void atualizar(Consulta consulta) throws SQLException, EntidadeNaoEncontradaException {
         try (Connection conexao = dataSource.getConnection()) {
-            PreparedStatement stmt = conexao.prepareStatement("UPDATE T_HC_CONSULTA SET DT_HORA = ?, ST_STATUS = ?, DS_AREA_MEDICA = ?, ID_PACIENTE = ?, ID_MEDICO = ? WHERE ID_CONSULTA = ?");
+            PreparedStatement stmt = conexao.prepareStatement("UPDATE T_HC_CONSULTA SET  ST_STATUS = ? WHERE ID_CONSULTA = ?");
 
-            stmt.setTimestamp(1, new Timestamp(consulta.getDataHora().getTime()));
-            stmt.setString(2, consulta.getStatus());
-            stmt.setString(3, consulta.getAreaMedica());
-            stmt.setInt(4, consulta.getPaciente().getIdPaciente());
-            stmt.setInt(5, consulta.getMedico().getIdMedico());
-            stmt.setInt(6, consulta.getIdConsulta());
+            stmt.setString(1, consulta.getStatus());
+            stmt.setInt(2, consulta.getIdConsulta());
 
             int rowsAffected = stmt.executeUpdate();
             if (rowsAffected == 0) {

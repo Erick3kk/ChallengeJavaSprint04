@@ -4,6 +4,8 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Date;
+
 @Getter
 @Setter
 
@@ -17,7 +19,7 @@ public class CadastroPacienteDto {
     private String cpf;
 
     @Past(message = "A data deve estar no passado")
-    private String dataNascimeto;
+    private Date dataNascimento;
 
     @NotBlank
     @Size(max = 20)
@@ -26,5 +28,7 @@ public class CadastroPacienteDto {
     @NotBlank(message = "O email é obrigatório")
     @Email(message = "O email deve ter formato valido")
     private String email;
+
+    private int idEndereco;
 
 }

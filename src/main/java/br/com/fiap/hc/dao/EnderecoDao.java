@@ -23,11 +23,11 @@ public class EnderecoDao {
         this.dataSource = dataSource;
     }
 
-    public void cadastrar(Endereco endereco) throws SQLException {
+    public Endereco cadastrar(Endereco endereco) throws SQLException {
         try (Connection conexao = dataSource.getConnection()) {
 
-            PreparedStatement stmt = conexao.prepareStatement("INSERT INTO T_HC_ENDERECO (ID_ENDERECO, DS_LOGRADOURO, NR_NUMERO, DS_COMPLEMENTO, NM_BAIRRO, NM_CIDADE, SG_ESTADO, NR_CEP) +" +
-                    "VALUES (SQ_HC_ENDERECO.nextval, ?, ?, ?, ?, ?, ?, ?)", new String[]{"ID_ENDERECO"});
+            PreparedStatement stmt = conexao.prepareStatement("INSERT INTO T_HC_ENDERECO (ID_ENDERECO, DS_LOGRADOURO, NR_NUMERO, DS_COMPLEMENTO, NM_BAIRRO, NM_CIDADE, SG_ESTADO, NR_CEP)" +
+                    " VALUES (SQ_HC_ENDERECO.nextval, ?, ?, ?, ?, ?, ?, ?)", new String[]{"ID_ENDERECO"});
 
             stmt.setString(1, endereco.getLogradouro());
             stmt.setInt(2, endereco.getNumero());
@@ -36,12 +36,16 @@ public class EnderecoDao {
             stmt.setString(5, endereco.getCidade());
             stmt.setString(6, endereco.getEstado());
             stmt.setString(7, endereco.getCep());
-            stmt.executeUpdate();
 
+            stmt.executeUpdate();
             ResultSet resultSet = stmt.getGeneratedKeys();
+
+            int idEndereco = 0;
             if (resultSet.next()) {
-                endereco.setIdEndereco(resultSet.getInt(1));
+                idEndereco = resultSet.getInt(1);
             }
+
+            return buscar(idEndereco);
         }
     }
 

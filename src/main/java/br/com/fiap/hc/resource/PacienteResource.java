@@ -7,6 +7,7 @@ import br.com.fiap.hc.dto.paciente.DetalhesPacienteDto;
 import br.com.fiap.hc.dto.paciente.LoginPacienteDto;
 import br.com.fiap.hc.exception.EntidadeNaoEncontradaException;
 import br.com.fiap.hc.model.Paciente;
+import br.com.fiap.hc.model.request.PacienteRequest;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -29,14 +30,14 @@ public class PacienteResource {
     private ModelMapper modelMapper;
 
     @DELETE
-    @Path("/{id}")
+    @Path("/deletar/{id}")
     public Response deletar(@PathParam("id") int id) throws EntidadeNaoEncontradaException, SQLException {
         pacienteDao.deletar(id);
         return Response.noContent().build(); // 204 No Content
     }
 
     @PUT
-    @Path("/{id}")
+    @Path("/atualizar/{id}")
     public Response atualizar(@PathParam("id") int id, @Valid AtualizarPacienteDto dto)
             throws EntidadeNaoEncontradaException, SQLException {
         Paciente paciente = modelMapper.map(dto, Paciente.class);
@@ -46,13 +47,14 @@ public class PacienteResource {
     }
 
     @GET
-    @Path("/{id}")
+    @Path("/buscar/{id}")
     public Response buscar(@PathParam("id") int id) throws SQLException, EntidadeNaoEncontradaException {
         DetalhesPacienteDto dto = modelMapper.map(pacienteDao.buscar(id), DetalhesPacienteDto.class);
         return Response.ok(dto).build();
     }
 
     @GET
+    @Path("/listar")
     public List<DetalhesPacienteDto> listar() throws SQLException {
         return pacienteDao.listar().stream()
                 .map(p -> modelMapper.map(p, DetalhesPacienteDto.class))
@@ -60,10 +62,11 @@ public class PacienteResource {
     }
 
     @POST
+    @Path("/criar")
     public Response create(@Valid CadastroPacienteDto dto,
                            @Context UriInfo uriInfo) throws SQLException {
 
-        Paciente paciente = modelMapper.map(dto, Paciente.class);
+        PacienteRequest paciente = modelMapper.map(dto, PacienteRequest.class);
         pacienteDao.cadastrar(paciente);
 
         // Constrói a URL para o recurso criado
