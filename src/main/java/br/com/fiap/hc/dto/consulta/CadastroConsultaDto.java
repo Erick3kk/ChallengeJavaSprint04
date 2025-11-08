@@ -21,4 +21,10 @@ public class CadastroConsultaDto {
     @Size(max = 75)
     private String areaMedica;
 
+    private int idPaciente;
+
+    private int idMedico;
+
+
+
 }

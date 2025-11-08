@@ -12,16 +12,9 @@ import java.util.Date;
 
 public class AtualizarConsultaDto {
 
-    @Future(message = "A data e hora deve estar no futuro")
-    private Date dataHora;
+    private int idConsulta;
 
     @NotBlank
     private String status;
-
-    @NotBlank
-    @Size(max = 75)
-    private String areaMedica;
-
-
 
 }

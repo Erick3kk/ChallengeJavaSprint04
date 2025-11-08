@@ -4,6 +4,8 @@ import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.sql.Date;
+
 @Getter
 @Setter
 
@@ -19,7 +21,7 @@ public class AtualizarPacienteDto {
 
     @NotBlank
     @Past(message = "A data deve estar no passado")
-    private String dataNascimeto;
+    private Date dataNascimeto;
 
     @NotBlank
     private String telefone;

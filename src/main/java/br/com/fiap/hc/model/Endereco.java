@@ -13,21 +13,21 @@ public class Endereco {
     private int numero;
     private String complemento;
     private String bairro;
-    private String estado;
     private String cidade;
+    private String estado;
     private String cep;
 
     public Endereco() {
     }
 
-    public Endereco(int idEndereco, String logradouro, int numero, String complemento, String bairro, String estado, String cidade, String cep) {
+    public Endereco(int idEndereco, String logradouro, int numero, String complemento, String bairro,  String cidade, String estado, String cep) {
         this.idEndereco = idEndereco;
         this.logradouro = logradouro;
         this.numero = numero;
         this.complemento = complemento;
         this.bairro = bairro;
-        this.estado = estado;
         this.cidade = cidade;
+        this.estado = estado;
         this.cep = cep;
     }
     public Endereco(int idEndereco, String logradouro, int numero, String bairro, String cidade, String estado, String cep) {

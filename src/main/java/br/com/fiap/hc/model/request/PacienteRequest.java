@@ -1,6 +1,5 @@
-package br.com.fiap.hc.dto.paciente;
+package br.com.fiap.hc.model.request;
 
-import br.com.fiap.hc.model.Endereco;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,14 +8,20 @@ import java.sql.Date;
 @Getter
 @Setter
 
-public class DetalhesPacienteDto {
+public class PacienteRequest {
 
     private int idPaciente;
+
     private String nome;
+
     private String cpf;
-    private Date dataNascimeto;
+
+    private Date dataNascimento;
+
     private String telefone;
+
     private String email;
-    private Endereco endereco;
+
+    private int idEndereco;
 
 }

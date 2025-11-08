@@ -13,11 +13,10 @@ public class CadastroEnderecoDto {
     @Size(max = 100)
     private String logradouro;
 
-    @NotBlank
+
     @PositiveOrZero
     private int numero;
 
-    @NotBlank
     @Size(max = 50)
     private String complemento;
 

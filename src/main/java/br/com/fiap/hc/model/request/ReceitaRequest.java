@@ -1,6 +1,5 @@
-package br.com.fiap.hc.dto.receita;
+package br.com.fiap.hc.model.request;
 
-import jakarta.validation.constraints.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,14 +8,14 @@ import java.sql.Date;
 @Getter
 @Setter
 
-public class CadastroReceitaDto {
+public class ReceitaRequest {
 
-    @Size(max = 150)
+
     private String medicamento;
 
-    @NotBlank
     private String dosagem;
 
     private int idConsulta;
+
 
 }
